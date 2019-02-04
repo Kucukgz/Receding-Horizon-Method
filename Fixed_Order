@@ -1,0 +1,94 @@
+% %*****      INVENTORY MANAGEMENT USING RECEDING HORIZON METHOD         *****
+% %**                              TASK 1                                **
+% % // Step by Step//  
+% % DEFINITIONS:
+%   % Demand_d=demand
+%   % D=given possible demands ([0,1,2,3,4,5,6])
+%   % probability= given probability ([0.04, 0.08, 0.28, 0.4,0.16,0.02,0.02])
+%   % total_apple=number of total apple
+%   % r=minimum stock
+%   % y=minimum order number
+%   % total_cost=total cost
+%   % initial cost,demand and total apple numbe will be zero for week=0 
+%   clear all
+%     rng('default');
+%     rng(1); 
+%     probability=[0.04, 0.08, 0.28, 0.4,0.16,0.02,0.02];     %Probability distribution of the demand
+%     D=[0,1,2,3,4,5,6];                                      %given possible demands
+%     r=1;                %fix min stock number
+%     y=3;                %fix order number
+%     
+%     cost=0;                                                 %initial cost = zero
+%     Demand_d=zeros(53,1);                                   %initial demand = zero
+%     total_apple=zeros(53,1);                                %initial apple number = zero
+%     demand=randsrc(52,1,[D;probability]);                   %random demands according to their possiblities for 52 week
+%     Demand_d(2:53,1)=demand;                                %first week = zero // zero was assigned from 2 to 53 week 
+%     week=1;           
+%     
+%     while week<53                                            %loop for 52 week
+%           week=week+1;                                       %loop for 52 week
+%           total_apple(1)=3;                                  %initial apple number=zero
+%         
+%           %Check total numbers of apple in the end of the each week
+%           if total_apple(week)<Demand_d(week) %if don't meet customer demands,pay 20 gold penalty
+%                 cost=cost+20;
+%                 total_apple(week)=0;          % if don't meet demand, you will have zero apple
+%           else
+%                 total_apple(week)=total_apple(week)-Demand_d(week);     %total apple at the end of the week
+%           end
+%           
+%           cost=cost+total_apple(week)*5;      % cost of warehouse cost 5 gold per unit per weekend
+%           C(week)=cost;
+%           
+%           %for next week order
+%           if total_apple(week)<=r             % check you are under stock level or not
+%                 total_apple(week+1)=total_apple(week)+y; % if under order y apple for next week
+%           end
+%       end
+%     
+%     cost=cost+total_apple(53)*10-total_apple(53)*5;      % return cost (^^dont forget last one!)
+%     Cost_Total=[C cost]; % Final cost
+% %******************************FIRST GRAPH*********************************
+% figure
+% subplot(3,1,1);
+% plot(1:53,Demand_d,'linewidth',2);
+% xlim([2,53]);
+% ylim([0,6]);
+% xlabel('Weeks');
+% ylabel('Demands');
+% title('Demands According to Weeks');
+% legend('Fixed Order');
+% grid on
+% 
+% subplot(3,1,2);
+% plot(1:52,ones(size(1:52))*3,'linewidth',2);
+% xlim([1,52]);
+% ylim([0,4]);
+% xlabel('Weeks');
+% ylabel('Order Numbers');
+% title('Order Numbers According to Weeks');
+% legend('Fixed Order');
+% grid on
+% 
+% subplot(3,1,3);
+% plot(1:54,total_apple,'linewidth',2);
+% xlim([1,54]);
+% ylim([0,6]);
+% xlabel('Weeks');
+% ylabel('Stock Left');
+% title('Stock Left According to Weeks');
+% legend('Fixed Order');
+% grid on
+% %******************************SECOND GRAPH********************************
+% figure
+% plot(1:54,Cost_Total);
+% xlim([1,53]);
+% xlabel('Weeks');
+% ylabel('Costs');
+% title('Costs According to Weeks');
+% legend('Fixed Order Number');
+% grid on
+
+R=[1;2;3];
+r=[18,12,1];
+
