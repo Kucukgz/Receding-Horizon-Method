@@ -1,0 +1,17 @@
+Task 1: Without using simulation, how would you choose the order number 𝑦𝑦 for these 52 weeks? Please explain your reason(s).
+
+
+Task 2: Use receding horizon method to formulate and solve the problem. Clearly state any assumptions you might have made during the process.
+How is this solution different from the one you obtained in Assignment 1? Is there any benefit using a variable order number 𝑦𝑦? 
+Evidence this.
+
+
+Task 3: Using receding horizon method requires the choosing of control and prediction horizons. How do these parameters affect your design?
+Evidence this.
+
+
+Task 4: Critically evaluate your work. Have you achieved the objectives? What problems did you find during this work?
+What conclusions can you draw from your design? How would you improve your estimate/design? From the experience of this work, 
+what do you need to consider when solving a practical problem?
+
+
