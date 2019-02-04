@@ -1,0 +1,91 @@
+%*          INVENTORY MANAGEMENT USING RECEDING HORIZON METHOD            *
+%**                              TASK 2,3                                **
+%***                       // Step by Step//                            ***
+%DEFINITIONS:
+  % Demand_d=demand
+  % D=given possible demands ([0,1,2,3,4,5,6])
+  % probability= given probability ([0.04, 0.08, 0.28, 0.4,0.16,0.02,0.02])
+  % //total_apple=number of total apple
+  % r=minimum stock
+  % y=minimum order number
+  % total_cost=total cost
+  % initial cost,demand and total apple number will be zero for week=0 
+
+rng('default');
+rng(1);
+neworder = zeros(52,1);     %initial order vector
+stock = zeros(53,1);        %initial stock  vector
+stock(1,1) = 3;             %initial stock
+total_cost=0;               %take initial cost zero
+N_Prediction = 10;          %prediction horizon
+N_Control=1;                %control horizon
+
+probability=[0.04, 0.08, 0.28, 0.4,0.16,0.02,0.02];   % Probability distribution of the demand
+D=[0,1,2,3,4,5,6];                                    % given possible demands
+Demand_d=randsrc(52,1,[D;probability]);               % generate random demands according to their possiblities for 52 week
+
+G_matrix = tril(ones(N_Prediction, N_Prediction), -1);% Need it for formulation
+H_matrix = ones(N_Prediction, 1);                     % Need it for formulation
+week=1;
+while week<53
+    
+    cvx_begin quiet         % CVX package starting 
+    variable order(N_Prediction)
+    minimize((G_matrix*order+H_matrix*(stock(week)-Demand_d(week)))'*(G_matrix*order+H_matrix*(stock(week)-Demand_d(week)))+order'*order);% miniminize cost equation
+    subject to
+    order <= 4;             % constraints of order 
+    order >= 0;             % constraints of order 
+    cvx_end                 % CVX package ending
+    
+    neworder(week) = round(order(1));            % order number must be an integer value
+    % next week stock before the start week
+    if (stock(week)-Demand_d(week))<0
+        stock(week+1) = neworder(week);
+    else
+        stock(week+1) = stock(week)-Demand_d(week)+neworder(week);
+    end
+    
+    % if stock cannot meet demand
+    if stock(week)<0
+        total_cost=total_cost+20;
+    else
+        total_cost=total_cost+5*stock(week);    % warehause cost
+    end
+    CostVector(week)=total_cost;                % to fallow cost trend
+    week=week+1;
+end
+total_cost=total_cost+10*stock(52);             % return cost (^^dont forget last one!)
+Compounded_Cost=[CostVector total_cost];        % compounded cost
+%******* Plot the Figures *********%
+figure
+subplot(3,1,1);
+plot(1:52,Demand_d)
+xlim([1,52])
+xlabel('Weeks')
+ylabel('Demands')
+title('Demands According to Weeks')
+grid on
+
+subplot(3,1,2);
+plot(1:52,neworder)
+xlim([1,52])
+xlabel('Weeks')
+ylabel('Order Numbers')
+title('Order Numbers According to Weeks')
+grid on
+
+subplot(3,1,3);
+plot(1:53,stock)
+xlim([1,53])
+xlabel('Weeks')
+ylabel('Stock Left')
+title('Stock Left According to Weeks')
+grid on
+
+figure
+plot(1:53,Compounded_Cost)
+xlim([1,53])
+xlabel('Weeks')
+ylabel('Costs')
+title('Costs According to Weeks')
+grid on
